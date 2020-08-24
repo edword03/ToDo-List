@@ -14,7 +14,9 @@ const todoData = [],
 const render = function() {
     todoList.textContent = '';
     todoCompleted.textContent = '';
-    loadData();
+    if (data !== null) {
+      loadData();
+    }
     todoData.forEach(function(item){
         const li = document.createElement('li');
         li.classList.add('todo-item');
