@@ -24,6 +24,7 @@ class ToDo{
   createItem(item) {
     const li = document.createElement('li');
     li.classList.add('todo-item');
+    li.key = item.key;
     li.insertAdjacentHTML('beforeend', `
       <span class="text-todo">${item.value}</span>
       <div class="todo-buttons">
@@ -59,40 +60,34 @@ class ToDo{
     return Math.random().toString(16).substring(2, 15) + Math.random().toString(16).substring(2, 15);
   }
 
-  deleteItem() {
+  deleteItem(target) {
+    target = target.closest('.todo-item');
     this.todoData.forEach((item) => {
-      this.todoData.delete(item.key);
-      this.render();
+      if (target.key === item.key) {
+        this.todoData.delete(item.key);
+        this.render();
+      }
     });
+    
   }
 
-  completeItem() {
-    for (let i = 0; i < this.todoData.size; i++) {
-      // this.todoData[i]
-      console.log('this.todoData[i]: ', this.todoData.values([i]));
-    }
-    this.todoData.forEach((item, key) => {
-      console.log(item);
-      // if (this.todoData.get(key).completed) {
-      //   this.todoData.get(key).completed = false;
-      //   this.render();
-      // } else {
-      //   this.todoData.get(key).completed = true;
-      //   this.render();
-      // }
+  completeItem(target) {
+    target = target.closest('.todo-item');
+    this.todoData.forEach((item) => {
+      if (target.key === item.key) {
+        item.completed = !item.completed;
+        this.render();
+      }
     });
   }
 
   handler(event) {
     const target = event.target;
     if (target.matches('.todo-complete')) {
-      this.completeItem();
+      this.completeItem(target);
     }
     if (target.matches('.todo-remove')) {
-      let keys = this.todoData.get();
-      console.log('keys: ', keys);
-
-      this.deleteItem();
+      this.deleteItem(target);
     }
   }
 
@@ -100,7 +95,6 @@ class ToDo{
     this.form.addEventListener('submit', this.addTodo.bind(this));
     this.todoContainer.addEventListener('click', this.handler.bind(this));
     this.render();
-    console.log(this.todoData);
   }
 }
 
